@@ -4,13 +4,6 @@
 
 ![weblogicscan](weblogicscan.png)
 
-# DEFF
-
-* 支持Python3
-* 修复漏洞检测误报，漏洞检测结果更精确
-* 添加CVE-2019-2729, CVE-2019-2618漏洞检测
-* 插件化漏洞扫描组件
-* 添加彩色打印
 
 # INSTALL
 
@@ -50,40 +43,42 @@ python3 WeblogicScan.py 192.168.1.1 7001
 
 * CVE-2019-2729
 
+* CVE-2020-2551
+
   
 
-  # EXTENDS
+# EXTENDS
 
-  如果想添加其他CVE或其他Weblogic漏洞，只需要按照如下规则填写插件即可：
+如果想添加其他CVE或其他Weblogic漏洞，只需要按照如下规则填写插件即可：
 
-  ```python
-  #!/usr/bin/env python
-  # _*_ coding:utf-8 _*_
-  
-  import logging
-  import sys
-  import requests
-  
-  from ..platform import ManageProcessor,Color
-  
-  logging.basicConfig(filename='Weblogic.log',
-                      format='%(asctime)s %(message)s',
-                      filemode="w", level=logging.INFO)
-  
-  headers = {'user-agent': 'ceshi/0.0.1'}
-  
-  
-  @ManageProcessor.plugin_register('CVE201XXXXX')
-  class CVE201XXXXX(object):
-      def process(self,ip,port):
-          self.run(ip,port)
-  
-      def run(self,url,port):
-          ......
-          your POC payload ......
-          if (success):
-  						 print(Color.OKGREEN+'[+]CVE201XXXXX 漏洞存在'+Color.ENDC)
-  ```
+```python
+#!/usr/bin/env python
+# _*_ coding:utf-8 _*_
+
+import logging
+import sys
+import requests
+
+from ..platform import ManageProcessor,Color
+
+logging.basicConfig(filename='Weblogic.log',
+                    format='%(asctime)s %(message)s',
+                    filemode="w", level=logging.INFO)
+
+headers = {'user-agent': 'ceshi/0.0.1'}
+
+
+@ManageProcessor.plugin_register('CVE201XXXXX')
+class CVE201XXXXX(object):
+    def process(self,ip,port):
+        self.run(ip,port)
+
+    def run(self,url,port):
+        ......
+        your POC payload ......
+        if (success):
+            print(Color.OKGREEN+'[+]CVE201XXXXX 漏洞存在'+Color.ENDC)
+```
 
   
 
@@ -91,7 +86,7 @@ python3 WeblogicScan.py 192.168.1.1 7001
 
 `__init__.py`
 
-```
+```python
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
 
@@ -100,14 +95,7 @@ __all__ = ['WeblogicConsole', 'CVE-2019-2618','CVE-2014-4210','CVE-2019-2725','C
 
 
 
-# Thanks
-
-感谢Daybreak的CVE-2019-2618 检测脚本
-
-# UPDATES
-
-修复了一些POC存在的问题，请表哥们及时git clone 新的代码。由于脚本改的比较仓促，表哥们发现一些bug可直接发issue，逐步改进。
 
 # NOTES
 
-目前暂不支持Weblogic 10.3.6   Weblogic 12.1.3.0.0和Weblogic12.2.1.3.0  JDK1.7版本的CVE-2019-2729漏洞检测。
+目前暂不支持 Weblogic 10.3.6 / Weblogic 12.1.3.0.0 / Weblogic12.2.1.3.0 JDK1.7 版本的 CVE-2019-2729 漏洞检测。
