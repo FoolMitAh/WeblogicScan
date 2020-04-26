@@ -4,8 +4,10 @@
 
 from .platform import ManageProcessor
 
-def pentest(ip,port):
+
+def pentest(ip, port):
     processor = ManageProcessor()
-    #print(processor.PLUGINS) # {’plugin1': <class '__main__.CleanMarkdownBolds'>}
-    processed = processor.process(ip,port)
-    #processed = processor.process(text="**foo bar**", plugins=('plugin2',))
+    # print(processor.PLUGINS)
+    # {'plugin1': <class '__main__.CleanMarkdownBolds'>}
+    processed = processor.process(ip, port)
+    # processed = processor.process(text="**foo bar**", plugins=('plugin2',))
