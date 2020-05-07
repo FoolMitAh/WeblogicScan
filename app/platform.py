@@ -1,25 +1,37 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
 
+import logging
+from urllib.parse import urlparse
+
+logging.basicConfig(filename='Weblogic.log',
+                    format='%(asctime)s %(message)s',
+                    filemode="w", level=logging.INFO)
+
 
 class ManageProcessor(object):
     PLUGINS = {}
 
-    def process(self, ip, port, plugins=()):
+    def process(self, target, plugins=()):
+        o = urlparse(target)
+        ip = o.hostname
+        port = o.port if o.port is not None else 80
         if plugins is ():
             for plugin_name in self.PLUGINS.keys():
                 try:
-                    print(Color.OKYELLOW + "[*]开始检测", plugin_name + Color.ENDC)
-                    self.PLUGINS[plugin_name]().process(ip, port)
+                    print(Color.OKYELLOW + "[*]开始检测", ip, port, plugin_name + Color.ENDC)
+                    if self.PLUGINS[plugin_name]().process(ip, port):
+                        logging.info("[+] {} {} {}".format(ip, port, plugin_name))
+                        print(Color.OKGREEN + "[+]", ip, port, plugin_name + Color.ENDC)
                 except BaseException:
                     print(Color.WARNING + "[-]{} 未成功检测，请检查网络连接或或目标存在负载中间件".format(plugin_name) + Color.ENDC)
         else:
             for plugin_name in plugins:
                 try:
-                    print("[*]开始检测 ", self.PLUGINS[plugin_name])
+                    print(Color.OKYELLOW + "[*]开始检测", ip, port, plugin_name + Color.ENDC)
                     self.PLUGINS[plugin_name]().process(ip, port)
                 except BaseException:
-                    print("[-]{}未成功检测，请检查网络连接或或目标存在负载中间".format(self.PLUGINS[plugin_name]))
+                    print(Color.WARNING + "[-]{} 未成功检测，请检查网络连接或或目标存在负载中间件".format(plugin_name) + Color.ENDC)
         return
 
     @classmethod
