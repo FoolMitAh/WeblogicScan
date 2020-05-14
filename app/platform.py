@@ -14,13 +14,18 @@ class ManageProcessor(object):
 
     def process(self, target, plugins=()):
         o = urlparse(target)
+        scheme = o.scheme
         ip = o.hostname
-        port = o.port if o.port is not None else 80
+        if o.port is None:
+            port = 443 if scheme == "https" else 80
+        else:
+            port = o.port
+        # print(scheme, ip, port)
         if plugins is ():
             for plugin_name in self.PLUGINS.keys():
                 try:
                     print(Color.OKYELLOW + "[*]开始检测", ip, port, plugin_name + Color.ENDC)
-                    if self.PLUGINS[plugin_name]().process(ip, port):
+                    if self.PLUGINS[plugin_name]().process(ip, port, scheme):
                         logging.info("[+] {} {} {}".format(ip, port, plugin_name))
                         print(Color.OKGREEN + "[+]", ip, port, plugin_name + Color.ENDC)
                 except BaseException:
@@ -29,7 +34,7 @@ class ManageProcessor(object):
             for plugin_name in plugins:
                 try:
                     print(Color.OKYELLOW + "[*]开始检测", ip, port, plugin_name + Color.ENDC)
-                    self.PLUGINS[plugin_name]().process(ip, port)
+                    self.PLUGINS[plugin_name]().process(ip, port, scheme)
                 except BaseException:
                     print(Color.WARNING + "[-]{} 未成功检测，请检查网络连接或或目标存在负载中间件".format(plugin_name) + Color.ENDC)
         return

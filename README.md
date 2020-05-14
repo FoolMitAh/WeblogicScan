@@ -22,3 +22,7 @@ Example :
 # DIFF
 
 支持批量检测，检测结果记录在 `Weblogic.log`
+
+添加 `CVE-2020-2551`
+
+支持 HTTPS
