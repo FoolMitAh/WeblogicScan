@@ -10,9 +10,10 @@ logging.basicConfig(filename='Weblogic.log',
 
 
 class ManageProcessor(object):
-    PLUGINS = {}
+    POCS = {}
+    EXPS = {}
 
-    def process(self, target, plugins=()):
+    def process(self, target, pocs=(), cmd=None):
         o = urlparse(target)
         scheme = o.scheme
         ip = o.hostname
@@ -21,29 +22,53 @@ class ManageProcessor(object):
         else:
             port = o.port
         # print(scheme, ip, port)
-        if plugins is ():
-            for plugin_name in self.PLUGINS.keys():
-                try:
-                    print(Color.OKYELLOW + "[*]开始检测", ip, port, plugin_name + Color.ENDC)
-                    if self.PLUGINS[plugin_name]().process(ip, port, scheme):
-                        logging.info("[+] {} {} {}".format(ip, port, plugin_name))
-                        print(Color.OKGREEN + "[+]", ip, port, plugin_name + Color.ENDC)
-                except BaseException:
-                    print(Color.WARNING + "[-]{} 未成功检测，请检查网络连接或或目标存在负载中间件".format(plugin_name) + Color.ENDC)
+        if pocs is ():
+            for poc_name in self.POCS.keys():
+                self.check(poc_name, ip, port, scheme)
         else:
-            for plugin_name in plugins:
-                try:
-                    print(Color.OKYELLOW + "[*]开始检测", ip, port, plugin_name + Color.ENDC)
-                    self.PLUGINS[plugin_name]().process(ip, port, scheme)
-                except BaseException:
-                    print(Color.WARNING + "[-]{} 未成功检测，请检查网络连接或或目标存在负载中间件".format(plugin_name) + Color.ENDC)
+            if cmd is None:
+                for poc_name in pocs:
+                    if poc_name in self.POCS:
+                        self.check(poc_name, ip, port, scheme)
+                    else:
+                        print(Color.WARNING + "[-] {} 暂不支持该漏洞检测".format(poc_name) + Color.ENDC)
+            else:
+                for exp_name in pocs:
+                    if exp_name in self.EXPS:
+                        self.exploit(exp_name, ip, port, scheme, cmd)
+                    else:
+                        print(Color.WARNING + "[-] {} 暂不支持该漏洞利用".format(exp_name) + Color.ENDC)
         return
 
+    def check(self, poc_name, ip, port, scheme):
+        try:
+            print(Color.OKYELLOW + "[*] 开始检测", ip, port, poc_name + Color.ENDC)
+            if self.POCS[poc_name]().process(ip, port, scheme):
+                logging.info("[+] {} {} {}".format(ip, port, poc_name))
+                print(Color.OKGREEN + "[+]", ip, port, poc_name + Color.ENDC)
+        except BaseException:
+            print(Color.WARNING + "[-] {} 未成功检测，请检查网络连接或或目标存在负载中间件".format(poc_name) + Color.ENDC)
+
+    def exploit(self, exp_name, ip, port, scheme, cmd):
+        try:
+            print(Color.OKYELLOW + "[*] Start Exploit", ip, port, exp_name + Color.ENDC)
+            if self.EXPS[exp_name]().process(ip, port, scheme, cmd):
+                print(Color.OKGREEN + "[+]", ip, port, exp_name + Color.ENDC)
+        except BaseException:
+            print(Color.WARNING + "[-] {} Exploit Failed. 请检查漏洞是否存在".format(exp_name) + Color.ENDC)
+
     @classmethod
-    def plugin_register(cls, plugin_name):
-        def wrapper(plugin):
-            cls.PLUGINS.update({plugin_name: plugin})
-            return plugin
+    def poc_register(cls, poc_name):
+        def wrapper(poc):
+            cls.POCS.update({poc_name: poc})
+            return poc
+        return wrapper
+
+    @classmethod
+    def exp_register(cls, exp_name):
+        def wrapper(exp):
+            cls.EXPS.update({exp_name: exp})
+            return exp
         return wrapper
 
 

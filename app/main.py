@@ -7,12 +7,13 @@ from .platform import ManageProcessor
 MAX_WORKERS = 10
 
 
-def pentest(target):
+def pentest(target, poc=None, cmd=None):
     processor = ManageProcessor()
-    # print(processor.PLUGINS)
-    # {'plugin1': <class '__main__.CleanMarkdownBolds'>}
-    processor.process(target)
-    # processed = processor.process(text="**foo bar**", plugins=('plugin2',))
+    # print(processor.POCS)
+    if poc is not None:
+        processor.process(target, pocs=(poc,), cmd=cmd)
+    else:
+        processor.process(target)
 
 
 def pentestmore(targets):

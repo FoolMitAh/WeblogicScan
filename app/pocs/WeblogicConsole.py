@@ -7,7 +7,7 @@ from ..platform import ManageProcessor, Color
 url = "http://192.168.3.32:7001/"
 
 
-@ManageProcessor.plugin_register('weblogic-console')
+@ManageProcessor.poc_register('weblogic-console')
 class WeblogicCosole(object):
     headers = {'user-agent': 'ceshi/0.0.1'}
 
@@ -22,8 +22,8 @@ class WeblogicCosole(object):
     def run(self, ip, port, scheme):
         if self.islive(ip, port, scheme) == 200:
             u = str(scheme) + '://' + str(ip) + ':' + str(port) + '/console/login/LoginForm.jsp'
-            print(Color.OKBLUE + "[+]The target Weblogic console address is exposed!\n[+]The path is: {}\n[+]Please try weak password blasting!".format(u) + Color.ENDC)
+            print(Color.OKBLUE + "[+] The target Weblogic console address is exposed!\n[+] The path is: {}\n[+] Please try weak password blasting!".format(u) + Color.ENDC)
             return True
         else:
-            print(Color.FAIL + "[-]Target Weblogic console address not found!" + Color.ENDC)
+            print(Color.FAIL + "[-] Target Weblogic console address not found!" + Color.ENDC)
             return False
