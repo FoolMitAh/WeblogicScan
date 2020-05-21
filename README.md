@@ -33,6 +33,8 @@ Example :
 
 添加了对 Weblogic 12.1.3 `CVE-2019-2725` / `CVE-2019-2729` 检测
 
+copy 了 https://github.com/lufeirider/CVE-2019-2725 大佬的 payload
+
 添加 `pocs/CVE-2020-2551.py`
 
 添加 `exps/CVE-2019-2725.py`
