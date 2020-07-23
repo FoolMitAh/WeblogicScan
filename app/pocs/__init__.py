@@ -4,6 +4,7 @@
 __all__ = [
     'T3handshake',
     'WeblogicConsole',
+    'CVE-2020-2883',
     'CVE-2020-2551',
     'CVE-2019-2725',
     'CVE-2019-2729',
