@@ -26,14 +26,14 @@ class T3handshake(object):
             # print(res)
             res = res.decode('utf-8')
             # versionInfo = res.splitlines()[0].replace("HELO:", "").replace(".false", "")
-            versionInfo = re.match(r'^HELO:([0-9]+.[0-9]+.[0-9]+.[0-9]+).', res).group(1)
+            versionInfo = re.match(r'.*?([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', res).group(1)
             if versionInfo:
                 if versionInfo == "12.1.2":
                     sock.send(bytes.fromhex('74332031312E312E320A41533A323034380A484C3A31390A0A'))
                     time.sleep(1)
                     res = sock.recv(1024)
                     res = res.decode('utf-8')
-                    versionInfo = re.match(r'^HELO:([0-9]+.[0-9]+.[0-9]+.[0-9]+).', res).group(1)
+                    versionInfo = re.match(r'.*?([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', res).group(1)
                     if versionInfo == "11.1.2":
                         # Server just echoes whatever version we send.
                         print(Color.OKBLUE + '[-] T3 protocol in use (Unknown WebLogic version).' + Color.ENDC)
@@ -42,7 +42,7 @@ class T3handshake(object):
                 return True
             else:
                 print(Color.OKBLUE + '[+] ' + res[:-1] + Color.ENDC)
-                print(Color.OKBLUE + '[-] T3 protocol in use (Unknown WebLogic version).' + Color.ENDC)
+                print(Color.OKBLUE + '[-] Unknown response received.' + Color.ENDC)
         except Exception as e:
             print(Color.FAIL + '[-] Target Weblogic T3 Handshake Failed.' + Color.ENDC)
 

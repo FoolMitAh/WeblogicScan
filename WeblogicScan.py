@@ -32,6 +32,6 @@ if __name__ == '__main__':
             urls = f.read().splitlines()
         # pentestmore(targets)
         for url in urls:
-            pentest(url)
+            pentest(url, poc=args.name)
     else:
         print("error: missing a mandatory option (-u or -f), use -h for basic help")
