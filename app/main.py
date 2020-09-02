@@ -5,13 +5,17 @@ from concurrent import futures
 from .platform import ManageProcessor
 
 MAX_WORKERS = 10
+QUICK_SCAN_POCS = ("T3handshake", "IIOPhandshake", "CVE-2019-2729")
 
 
 def pentest(target, poc=None, cmd=None):
     processor = ManageProcessor()
     # print(processor.POCS)
     if poc is not None:
-        processor.process(target, pocs=(poc,), cmd=cmd)
+        if poc == 'quickscan':
+            processor.process(target, pocs=QUICK_SCAN_POCS, cmd=cmd)
+        else:
+            processor.process(target, pocs=(poc,), cmd=cmd)
     else:
         processor.process(target)
 
