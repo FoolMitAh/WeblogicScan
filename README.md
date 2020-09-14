@@ -21,6 +21,9 @@ Example :
 	python3 WeblogicScan.py -f targets.txt
 	python3 WeblogicScan.py -n CVE-2019-2725
 	python3 WeblogicScan.py -n CVE-2019-2725 -e whoami
+Quickscan :
+	python3 WeblogicScan.py -n quickscan -u http://127.0.0.1:7001/
+	(T3handshake / IIOPhandshake / CVE-2019-2729 / CVE-2017-10271)
 ```
 
 # Diff
